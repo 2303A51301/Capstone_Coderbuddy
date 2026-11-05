@@ -1,0 +1,11 @@
+.venv/
+.venv-*/
+.env
+.pytest_cache/
+.playwright-mcp/
+__pycache__/
+*.py[cod]
+workspace/
+data/
+build/
+dist/

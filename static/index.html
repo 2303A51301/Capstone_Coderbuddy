@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#fff8fa">
+  <title>CoderBuddy-CaPStone | Engineering Studio</title>
+  <link rel="icon" type="image/svg+xml" href="/static/favicon.svg">
+  <link rel="stylesheet" href="/static/styles.css">
+  <link rel="stylesheet" href="/static/workspace.css">
+  <link rel="stylesheet" href="/static/studio.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="brand" href="/" aria-label="Coder Buddy home">
+      <span class="brand-mark">◈</span>
+      <span class="brand-name">CoderBuddy<span class="brand-light">-CaPStone</span></span>
+      <span class="brand-divider"></span>
+      <span class="brand-product">BUILD STUDIO</span>
+      <span id="current-project" class="current-project"></span>
+    </a>
+    <div class="topbar-right">
+      <span id="model-status" class="model-status" hidden><i></i><span>Checking provider…</span></span>
+      <a class="docs-link" href="/docs" target="_blank" rel="noreferrer">API docs <span>↗</span></a>
+    </div>
+  </header>
+
+  <aside class="studio-sidebar" aria-label="Studio navigation and projects">
+    <div class="studio-nav">
+      <button id="new-project" class="primary-button">+ New application</button>
+      <button id="toggle-sidebar" class="secondary-button" aria-expanded="false" aria-controls="queue-panel projects-panel studio-settings">Projects &amp; queue</button>
+      <nav aria-label="Workspace sections">
+        <button data-section="workbench">◇ Explorer</button>
+        <button data-section="queue-panel">≡ Build queue</button>
+        <button data-section="projects-panel">▧ Projects</button>
+        <button data-section="quality-panel">›_ Validation</button>
+        <button data-section="agent-panel">✳ Activity</button>
+        <button data-section="studio-settings">⚙ Setup</button>
+      </nav>
+    </div>
+    <section id="queue-panel" class="sidebar-section" aria-labelledby="queue-title">
+      <div class="sidebar-heading"><h2 id="queue-title">BUILD QUEUE</h2><span id="queue-count">0</span></div>
+      <p class="sidebar-hint">One build at a time, in submission order.</p>
+      <div id="queue-list" class="queue-list" aria-live="polite"></div>
+    </section>
+    <section id="projects-panel" class="sidebar-section" aria-labelledby="projects-title">
+      <div class="sidebar-heading"><h2 id="projects-title">PROJECTS</h2><span id="project-count">0</span></div>
+      <label class="sr-only" for="project-search">Search saved projects</label>
+      <input id="project-search" type="search" placeholder="Search projects…">
+      <label class="recovered-toggle"><input id="show-recovered" type="checkbox"> Include recovered source folders</label>
+      <p class="sidebar-hint">Saved on this machine · SQLite history</p>
+      <div id="project-list" class="project-list"></div>
+    </section>
+    <details id="studio-settings" class="sidebar-section">
+      <summary>PROVIDER &amp; DELIVERY</summary>
+      <p>Provider and model are configured server-side in <code>.env</code>. No keys are sent to this browser.</p>
+      <p>Static HTML/CSS/JS previews and Python behavior tests are supported. Generated apps are not full production backends.</p>
+      <p>Export downloads source. Publishing requires hosting setup and confirmation; no external deployment is configured.</p>
+      <p>Waiting requests can be cancelled. Active builds finish within bounded model and test timeouts.</p>
+    </details>
+  </aside>
+  <main class="page-shell">
+    <section class="hero-grid">
+      <div class="hero-copy">
+        <p class="eyebrow"><span class="eyebrow-line"></span> YOUR LOCAL AI ENGINEERING TEAM</p>
+        <h1>Your ideas.<br><em>A working starting point.</em></h1>
+        <p class="hero-lede">Describe what you need. Coder Buddy plans the work, writes the code, runs real behavior tests, and gives you a working app to refine.</p>
+        <div class="workflow-rail"><span><b>01</b> Understand</span><i></i><span><b>02</b> Build</span><i></i><span><b>03</b> Verify</span><i></i><span><b>04</b> Refine</span></div>
+      </div>
+      <section class="prompt-card" aria-labelledby="prompt-title">
+        <div class="prompt-head">
+          <div><p class="eyebrow">START A BUILD</p><h2 id="prompt-title">What should we make?</h2></div>
+          <span class="sparkle" aria-hidden="true">✳</span>
+        </div>
+        <label class="sr-only" for="requirement">Describe your application</label>
+        <textarea id="requirement" maxlength="4000" placeholder="Describe the app, who it's for, and what it should do…">Build a small todo app for planning daily work. Let me add tasks, mark them complete, and remove them.</textarea>
+        <div class="prompt-bottom"><span id="char-count">0 / 4000</span><button id="build" class="primary-button"><span>Queue build</span><b>↗</b></button></div>
+        <div class="prompt-samples"><span>START WITH</span><button data-prompt="Build an ecommerce clothing store for the Naveen brand with stylish T-shirts, product filters, size selection, and a shopping cart.">Naveen clothing store</button><button data-prompt="Build a calculator with add, subtract, multiply, divide, keyboard support, and a clear button.">Calculator</button><button data-prompt="Build a small todo app for planning daily work. Let me add tasks, mark them complete, and remove them.">Task planner</button></div>
+      </section>
+    </section>
+
+    <section id="welcome" class="welcome-grid">
+      <div class="welcome-panel"><div class="welcome-icon">✳</div><div><h2>Your build workspace is ready</h2><p>Once your app is generated, explore its source and interact with the live preview side by side. Ask for changes whenever you're ready.</p></div></div>
+      <aside class="history-panel"><div class="section-heading"><div><p class="eyebrow">SAVED ON THIS MACHINE</p><h2>Recent work</h2></div><span id="history-count" class="count-badge">0</span></div><div id="history-list" class="history-list"><p class="muted empty-history">No builds yet. Projects persist across restarts.</p></div></aside>
+    </section>
+
+    <section id="dashboard" class="dashboard" hidden>
+      <div class="run-heading">
+        <div class="run-title-wrap"><p class="eyebrow">PROJECT WORKSPACE <span id="run-id" class="run-id"></span></p><h2 id="run-title">Your application</h2><p id="run-analysis" class="run-analysis"></p></div>
+        <div class="run-actions"><span id="status" class="run-status queued"><i></i><span>Queued</span></span><button id="cancel-run" class="secondary-button" hidden>Cancel waiting</button><button id="retry-run" class="secondary-button" hidden>Retry build</button><a id="download" class="secondary-button" href="#" download>↓ <span>Export project</span></a></div>
+      </div>
+      <div class="revision-bar"><span id="sequence-label"></span><label for="build-revision">Build history</label><select id="build-revision" aria-label="Select project build"></select><span id="saved-at"></span></div>
+      <div id="fallback-notice" class="notice" hidden></div>
+
+      <div class="metrics-row">
+        <article class="metric-card"><span class="metric-icon violet">▧</span><div><small>PROJECT TYPE</small><strong id="type">—</strong></div></article>
+        <article class="metric-card"><span class="metric-icon mint">⌘</span><div><small>PROJECT FILES</small><strong id="files">0</strong></div></article>
+        <article class="metric-card"><span class="metric-icon amber">↻</span><div><small>FIX ATTEMPTS</small><strong id="retries">0</strong></div></article>
+        <article class="metric-card"><span class="metric-icon blue">◷</span><div><small>BUILD TIME</small><strong id="duration">—</strong></div></article>
+      </div>
+
+      <details class="plan-panel">
+        <summary class="plan-summary"><span><span class="eyebrow">THE AGENT LOOP</span><strong>Build plan</strong></span><span id="model-used" class="model-used">Local model</span></summary>
+        <ol id="plan" class="plan-list"></ol>
+      </details>
+
+      <section id="workbench" class="workbench" aria-label="Code editor and live application preview">
+        <section class="workbench-main code-pane" aria-label="Project source code">
+          <div class="pane-heading"><div><span class="pane-kicker">01 / SOURCE</span><strong>Code</strong></div><span class="pane-project"><i></i><span id="pane-project-name">project</span></span></div>
+          <div class="file-browser">
+            <nav id="file-list" class="file-list" aria-label="Project files"><p class="muted">Files appear after generation.</p></nav>
+            <div class="code-view">
+              <div class="code-name"><span class="file-icon">◇</span><span id="code-name">Choose a file</span><span class="code-language">SOURCE</span></div>
+              <div class="code-editor"><div id="code-lines" class="line-numbers" aria-hidden="true">1</div><pre><code id="code-content">Generated source will be shown here.</code></pre></div>
+            </div>
+          </div>
+          <details id="quality-panel" class="quality-drawer" open>
+            <summary><span class="terminal-mark">›_</span><span>TEST OUTPUT</span><span id="test-badge" class="test-badge pending">Waiting</span></summary>
+            <p id="validation-summary" class="validation-summary">Behavior tests will run after code generation.</p>
+            <pre id="validation" class="terminal-output">Awaiting validation…</pre>
+            <div class="feature-list-wrap"><p class="eyebrow">INTERPRETED FEATURES</p><ul id="feature-list" class="feature-list"><li>Waiting for requirement analysis</li></ul></div>
+          </details>
+          <details id="agent-panel" class="activity-drawer"><summary>AGENT ACTIVITY <span>View workflow events</span></summary><div id="logs" class="activity-list"></div></details>
+        </section>
+
+        <section class="workbench-main preview-pane" aria-label="Live application preview">
+          <div class="pane-heading preview-pane-heading">
+            <div><span class="pane-kicker">02 / LIVE APP</span><strong>Preview</strong></div>
+            <div class="preview-actions"><a id="open-preview" class="preview-tool" href="#" target="_blank" rel="noreferrer" aria-label="Open preview in a new tab" title="Open preview in a new tab">↗</a><button id="refresh-preview" class="preview-tool" title="Refresh preview" aria-label="Refresh preview">↻</button><button id="expand-preview" class="preview-tool expand-tool" aria-pressed="false">⤢ <span>Expand app</span></button></div>
+          </div>
+          <div class="preview-toolbar"><span class="window-dots"><i></i><i></i><i></i></span><span id="preview-address">localhost / app preview</span><span id="preview-state" class="preview-live">WAITING</span></div>
+          <div id="preview-stage" class="preview-stage">
+            <div id="preview-empty" class="preview-empty"><span>✳</span><p>Your running app will appear here</p><small>Generate a project to interact with its live preview.</small></div>
+            <iframe id="preview-frame" class="preview-frame" title="Generated web app preview" sandbox="allow-scripts allow-forms" hidden></iframe>
+          </div>
+        </section>
+      </section>
+
+      <section class="iterate-panel" aria-labelledby="iterate-title">
+        <div class="iterate-copy"><span class="iterate-icon">✳</span><div><p class="eyebrow">YOUR NEXT INSTRUCTION</p><h3 id="iterate-title">What would you like to change?</h3><p>Describe the next improvement. Coder Buddy will update the project and run its tests again.</p></div></div>
+        <form id="iteration-form" class="iteration-form">
+          <label class="sr-only" for="iteration">Describe a change</label>
+          <textarea id="iteration" maxlength="2000" rows="2" placeholder="e.g. Add a due date and let me filter completed tasks…"></textarea>
+          <div class="iteration-actions"><div class="change-suggestions"><span>Try</span><button type="button" data-change="Add a search box to quickly find items.">Add search</button><button type="button" data-change="Make the layout work well on mobile screens.">Improve mobile</button><button type="button" data-change="Add a dark mode toggle.">Add dark mode</button></div><button id="refine" class="primary-button">Apply change <b>↗</b></button></div>
+        </form>
+      </section>
+
+      <section class="history-inline"><div class="section-heading"><div><p class="eyebrow">PERSISTENT BUILD HISTORY</p><h2>Recent requests</h2></div></div><div id="history-inline-list" class="history-inline-list"></div></section>
+    </section>
+  </main>
+
+  <section class="team-contact" aria-labelledby="team-title"><div class="team-intro"><p class="eyebrow">BUILT BY THE PROJECT TEAM</p><h2 id="team-title">Questions or project issues?</h2><p>Contact any of our team members or reach out to our project guide.</p></div><div class="team-members"><div><strong>P. Vardhini</strong><span>2303A51301</span></div><div><strong>R. Yashritha</strong><span>2303A51785</span></div><div><strong>A. Harika</strong><span>2303A51376</span></div><div><strong>V. Ajaykumar</strong><span>2303A51268</span></div><div><strong>V. Sneha</strong><span>2303A51332</span></div><div class="team-guide"><strong>K. Balakrishna</strong><span>Project Guide</span></div></div></section>
+  <footer class="footer"><span>◈ coderbuddy-CAPSTONE</span><span>Local-first · LangGraph workflow · Human-guided iteration</span><a href="/docs" target="_blank" rel="noreferrer">Developer API ↗</a></footer>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+  <script src="/static/app.js" defer></script>
+</body>
+</html>

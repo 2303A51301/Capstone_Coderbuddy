@@ -1,0 +1,1 @@
+"""Coder Buddy application package."""
